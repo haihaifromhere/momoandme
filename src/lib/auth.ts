@@ -30,8 +30,8 @@ export async function verifyUnlockToken(token: string | undefined): Promise<bool
 }
 
 export async function isUnlocked(): Promise<boolean> {
-  // Password gate removed — box is always open.
-  return true;
+  const jar = await cookies();
+  return verifyUnlockToken(jar.get(SESSION_COOKIE)?.value);
 }
 
 export function checkPassword(password: string): boolean {

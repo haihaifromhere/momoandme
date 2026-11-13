@@ -99,8 +99,11 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
         action="/unlock"
         onSubmit={handleSubmit}
       >
-        <label htmlFor="keepsake-password" className="unlock-label">
-          Password
+        <p className="unlock-prompt" id="keepsake-prompt">
+          Only for momo to see, write the magic words pookie!
+        </p>
+        <label htmlFor="keepsake-password" className="sr-only">
+          Magic words
         </label>
         <input
           id="keepsake-password"
@@ -115,6 +118,7 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
           autoCorrect="off"
           spellCheck={false}
           enterKeyHint="go"
+          aria-describedby="keepsake-prompt"
           disabled={busy || opening}
           // Safari/iOS may rewrite capitalization/autocorrect attrs before hydrate.
           suppressHydrationWarning
@@ -131,7 +135,6 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
             {error}
           </p>
         ) : null}
-        <p className="unlock-hint">Password: case doesn&apos;t matter</p>
       </form>
     </div>
   );
