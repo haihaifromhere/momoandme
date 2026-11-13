@@ -122,6 +122,14 @@
   opacity: 0.65;
 }
 
+.unlock-hint {
+  margin: 0;
+  font-family: var(--font-courier), monospace;
+  font-size: 0.68rem;
+  color: var(--dusty-blue-deep);
+  text-align: center;
+}
+
 .unlock-error {
   margin: 0.2rem 0 0;
   font-family: var(--font-courier), monospace;

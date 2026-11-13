@@ -33,7 +33,8 @@ export async function POST(request: Request) {
 
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    sameSite: "lax",
+    // "none" on HTTPS helps some mobile browsers behind tunnels/proxies.
+    sameSite: secure ? "none" : "lax",
     secure,
     path: "/",
     maxAge: 60 * 60 * 24 * 14,

@@ -9,6 +9,14 @@ type Props = {
   initialError?: string;
 };
 
+function isCoarsePointer() {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  );
+}
+
 export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
   const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
@@ -24,7 +32,13 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
       return;
     }
 
-    // Prefer fetch when JS is alive. On network failure, fall back to POST /unlock.
+    // Mobile / tunnel: native form POST is more reliable than fetch.
+    if (isCoarsePointer()) {
+      setBusy(true);
+      // Do not preventDefault — browser posts to /unlock and redirects back.
+      return;
+    }
+
     e.preventDefault();
     setError("");
     setBusy(true);
@@ -36,7 +50,7 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
       const res = await fetch("/api/unlock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "same-origin",
+        credentials: "include",
         body: JSON.stringify({ password }),
         signal: controller.signal,
       });
@@ -47,6 +61,12 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
         setError(data.error || "That didn't open it. Try again?");
         setBusy(false);
         return;
+      }
+
+      try {
+        sessionStorage.setItem("keepsake_unlocked", "1");
+      } catch {
+        // ignore
       }
 
       const reduce =
@@ -64,7 +84,7 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
       }, 850);
     } catch {
       window.clearTimeout(timeout);
-      // Client JS/fetch broken or timed out (common on mobile tunnels).
+      // Fall back to native form POST.
       form.submit();
     }
   }
@@ -86,10 +106,11 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
           id="keepsake-password"
           name="password"
           className="unlock-input focus-ring"
-          type="password"
+          type="text"
+          inputMode="text"
           maxLength={64}
           required
-          autoComplete="current-password"
+          autoComplete="off"
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
@@ -103,13 +124,14 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
           className="unlock-btn focus-ring"
           disabled={busy || opening}
         >
-          {opening ? "Opening..." : busy ? "Checking..." : "Open box"}
+          {opening ? "Opening..." : busy ? "Opening..." : "Open box"}
         </button>
         {error ? (
           <p className="unlock-error" role="alert">
             {error}
           </p>
         ) : null}
+        <p className="unlock-hint">Password: case doesn&apos;t matter</p>
       </form>
     </div>
   );

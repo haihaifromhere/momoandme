@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   // Allow phone preview through Cloudflare quick tunnels + LAN.
   allowedDevOrigins: [
     "*.trycloudflare.com",
-    "hobby-mar-cartoons-abstracts.trycloudflare.com",
+    "camcorder-zope-chemicals-labor.trycloudflare.com",
     "10.0.0.231",
   ],
   turbopack: {
