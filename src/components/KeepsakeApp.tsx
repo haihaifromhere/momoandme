@@ -8,6 +8,10 @@ import LetterView from "@/components/LetterView";
 import CardGallery from "@/components/CardGallery";
 import TicketView from "@/components/TicketView";
 import PhotoView from "@/components/PhotoView";
+import BackgroundMusic from "@/components/BackgroundMusic";
+
+/** Daniel Caesar — Cyanide (CASE STUDY 01) */
+const CYANIDE_SPOTIFY_ID = "7lmsi1pVDa3HnfeinsL89t";
 
 type View =
   | { type: "box" }
@@ -88,8 +92,10 @@ export default function KeepsakeApp({
     );
   }
 
+  let main = null;
+
   if (view.type === "letter") {
-    return (
+    main = (
       <LetterView
         letter={content.letter}
         onBack={() => {
@@ -98,10 +104,8 @@ export default function KeepsakeApp({
         }}
       />
     );
-  }
-
-  if (view.type === "cards") {
-    return (
+  } else if (view.type === "cards") {
+    main = (
       <CardGallery
         cards={content.memoryCards}
         captions={content.memoryCardCaptions}
@@ -109,10 +113,8 @@ export default function KeepsakeApp({
         onClose={() => setView({ type: "box" })}
       />
     );
-  }
-
-  if (view.type === "ticket") {
-    return (
+  } else if (view.type === "ticket") {
+    main = (
       <TicketView
         artist={content.concert.artist}
         date={content.concert.date}
@@ -120,20 +122,16 @@ export default function KeepsakeApp({
         onClose={() => setView({ type: "box" })}
       />
     );
-  }
-
-  if (view.type === "photo") {
-    return (
+  } else if (view.type === "photo") {
+    main = (
       <PhotoView
         filename={content.photos[view.index]}
         label={`Photo ${view.index + 1}`}
         onClose={() => setView({ type: "box" })}
       />
     );
-  }
-
-  if (view.type === "calendar") {
-    return (
+  } else if (view.type === "calendar") {
+    main = (
       <div className="overlay-view">
         <button
           type="button"
@@ -152,10 +150,8 @@ export default function KeepsakeApp({
         </figure>
       </div>
     );
-  }
-
-  if (view.type === "lego") {
-    return (
+  } else if (view.type === "lego") {
+    main = (
       <div className="overlay-view">
         <button
           type="button"
@@ -174,20 +170,27 @@ export default function KeepsakeApp({
         </figure>
       </div>
     );
+  } else {
+    main = (
+      <div className={openingIn ? "just-opened" : undefined}>
+        <OpenBox
+          content={content}
+          letterRef={letterRef}
+          onOpenLetter={() => setView({ type: "letter" })}
+          onOpenCards={() => setView({ type: "cards" })}
+          onOpenTicket={() => setView({ type: "ticket" })}
+          onOpenPhoto={(index) => setView({ type: "photo", index })}
+          onOpenCalendar={() => setView({ type: "calendar" })}
+          onOpenLego={() => setView({ type: "lego" })}
+        />
+      </div>
+    );
   }
 
   return (
-    <div className={openingIn ? "just-opened" : undefined}>
-      <OpenBox
-        content={content}
-        letterRef={letterRef}
-        onOpenLetter={() => setView({ type: "letter" })}
-        onOpenCards={() => setView({ type: "cards" })}
-        onOpenTicket={() => setView({ type: "ticket" })}
-        onOpenPhoto={(index) => setView({ type: "photo", index })}
-        onOpenCalendar={() => setView({ type: "calendar" })}
-        onOpenLego={() => setView({ type: "lego" })}
-      />
-    </div>
+    <>
+      {main}
+      <BackgroundMusic trackId={CYANIDE_SPOTIFY_ID} />
+    </>
   );
 }

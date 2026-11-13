@@ -662,6 +662,43 @@
   font-family: var(--font-courier), monospace;
 }
 
+.bg-music {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 40;
+  width: min(calc(100vw - 1.5rem), 320px);
+  padding: 0.45rem 0.55rem 0.55rem;
+  border-radius: 14px;
+  background: rgba(255, 252, 248, 0.92);
+  border: 1px solid rgba(150, 120, 110, 0.28);
+  box-shadow: 0 10px 28px rgba(40, 30, 40, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+.bg-music-label {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-fell), Georgia, serif;
+  font-size: 0.72rem;
+  color: #5a3f4a;
+  letter-spacing: 0.02em;
+}
+
+.bg-music iframe {
+  display: block;
+  border-radius: 10px;
+  border: none;
+}
+
+@media (max-width: 640px) {
+  .bg-music {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+  }
+}
+
 /* Mobile: bigger items in clear non-overlapping zones */
 @media (max-width: 640px) {
   .keepsake-box {
