@@ -37,5 +37,6 @@ export async function isUnlocked(): Promise<boolean> {
 export function checkPassword(password: string): boolean {
   const expected = process.env.KEEPSAKE_PASSWORD;
   if (!expected) return false;
-  return password.trim() === expected.trim();
+  // Case-insensitive so iOS autocapitalize doesn't block unlock.
+  return password.trim().toLowerCase() === expected.trim().toLowerCase();
 }

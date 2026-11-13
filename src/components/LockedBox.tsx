@@ -29,13 +29,18 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
     setError("");
     setBusy(true);
 
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 8000);
+
     try {
       const res = await fetch("/api/unlock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
         body: JSON.stringify({ password }),
+        signal: controller.signal,
       });
+      window.clearTimeout(timeout);
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.ok || !data.content) {
@@ -58,7 +63,8 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
         onUnlocked(data.content);
       }, 850);
     } catch {
-      // Client JS/fetch broken (common on some mobile tunnel setups).
+      window.clearTimeout(timeout);
+      // Client JS/fetch broken or timed out (common on mobile tunnels).
       form.submit();
     }
   }
@@ -84,6 +90,9 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
           maxLength={64}
           required
           autoComplete="current-password"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           enterKeyHint="go"
           disabled={busy || opening}
           // Safari/iOS may rewrite capitalization/autocorrect attrs before hydrate.
