@@ -9,42 +9,28 @@ type Props = {
   initialError?: string;
 };
 
-function isCoarsePointer() {
-  if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia("(pointer: coarse)").matches ||
-    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  );
-}
-
 export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
   const [error, setError] = useState(initialError);
   const [busy, setBusy] = useState(false);
   const [opening, setOpening] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    // Always preventDefault so React state updates can't cancel a native
+    // form POST on iOS Safari (a common mobile unlock failure).
+    e.preventDefault();
     const form = e.currentTarget;
     const password = String(new FormData(form).get("password") || "").trim();
 
     if (!password) {
-      e.preventDefault();
       setError("Enter the password.");
       return;
     }
 
-    // Mobile / tunnel: native form POST is more reliable than fetch.
-    if (isCoarsePointer()) {
-      setBusy(true);
-      // Do not preventDefault — browser posts to /unlock and redirects back.
-      return;
-    }
-
-    e.preventDefault();
     setError("");
     setBusy(true);
 
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 8000);
+    const timeout = window.setTimeout(() => controller.abort(), 10000);
 
     try {
       const res = await fetch("/api/unlock", {
@@ -84,8 +70,8 @@ export default function LockedBox({ onUnlocked, initialError = "" }: Props) {
       }, 850);
     } catch {
       window.clearTimeout(timeout);
-      // Fall back to native form POST.
-      form.submit();
+      // Last resort: full page form POST (bypasses stuck fetch).
+      HTMLFormElement.prototype.submit.call(form);
     }
   }
 
