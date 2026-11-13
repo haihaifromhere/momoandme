@@ -134,7 +134,10 @@ export default function KeepsakeApp({ content }: Props) {
   return (
     <>
       {main}
-      <BackgroundMusic trackId={CYANIDE_SPOTIFY_ID} />
+      <BackgroundMusic
+        trackId={CYANIDE_SPOTIFY_ID}
+        visible={view.type === "box"}
+      />
     </>
   );
 }
