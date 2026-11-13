@@ -2,7 +2,6 @@ import { createReadStream, existsSync, statSync } from "fs";
 import path from "path";
 import { Readable } from "stream";
 import { NextRequest, NextResponse } from "next/server";
-import { isUnlocked } from "@/lib/auth";
 import { keepsakeContent } from "@/content/keepsake-content";
 
 const PRIVATE_ROOT = path.join(process.cwd(), "private");
@@ -27,11 +26,6 @@ export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ path: string[] }> }
 ) {
-  const unlocked = await isUnlocked();
-  if (!unlocked) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { path: parts } = await context.params;
   const relative = parts.join("/");
 
