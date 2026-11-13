@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --ivory: #f4efe4;
+  --ivory-deep: #e8dfce;
+  --dusty-blue: #7a97ad;
+  --dusty-blue-deep: #5d7a92;
+  --burgundy: #7a3b45;
+  --burgundy-soft: #9a555f;
+  --soft-brown: #6b5a46;
+  --ink: #2c241c;
+  --surface: #c4a882;
+  --surface-deep: #a88862;
+  --cloth: #6e8fa8;
+  --cloth-deep: #54748c;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-bg:
+    radial-gradient(ellipse 48% 40% at 10% 16%, rgba(147, 196, 236, 0.72), transparent 72%),
+    radial-gradient(ellipse 40% 34% at 92% 10%, rgba(176, 214, 244, 0.68), transparent 70%),
+    radial-gradient(ellipse 52% 42% at 82% 78%, rgba(130, 186, 228, 0.62), transparent 74%),
+    radial-gradient(ellipse 44% 36% at 14% 86%, rgba(164, 208, 240, 0.66), transparent 72%),
+    radial-gradient(ellipse 32% 28% at 48% 46%, rgba(198, 226, 246, 0.55), transparent 68%),
+    radial-gradient(ellipse 26% 22% at 64% 24%, rgba(158, 204, 238, 0.5), transparent 70%),
+    radial-gradient(ellipse 30% 26% at 30% 66%, rgba(180, 216, 242, 0.52), transparent 70%),
+    #ffffff;
+}
+
+@theme inline {
+  --color-ivory: var(--ivory);
+  --color-ink: var(--ink);
+  --font-sans: var(--font-fell);
+  --font-mono: var(--font-courier);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+  background: var(--page-bg);
+  background-color: #ffffff;
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-fell), Georgia, serif;
+}
+
+.paper-grain {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(90, 60, 30, 0.02) 2px,
+      rgba(90, 60, 30, 0.02) 3px
+    );
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box-cover,
+  .keepsake-object {
+    transition: none !important;
+    animation: none !important;
+  }
+}
